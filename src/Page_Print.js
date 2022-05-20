@@ -4,6 +4,7 @@ import { Container, Row,Col, Button } from 'react-bootstrap';
 
 import { useReactToPrint } from 'react-to-print';
 import Barcode from 'react-barcode';
+import QRCode from "react-qr-code";
 
 import bg from './images/bg.png';
 import lodging from './images/lodge.png';
@@ -93,10 +94,11 @@ function PrintPage() {
                                             :person.eng_name}<br/>{person.kor_name}
                                         </b></h1>
                                     </Container>
-                                    <Container style={{marginTop:'-23px', marginLeft:'-25px', textAlign:'left'}}>
-                                        <Barcode value={person.barcode} height={30} displayValue={false} width={1} />
+                                    <Container style={{marginTop:'-23px', marginLeft:'-20px', textAlign:'left'}}>
+                                        <QRCode value={person.barcode} size={40}/>
+                                        {/* Replaced with QRCode<Barcode value={person.barcode} height={30} displayValue={false} width={1} /> */}
                                     </Container>
-                                    <h6 style={{marginTop: '15px', marginLeft:'3px', textAlign: 'left', color: '#ffffff', letterSpacing: '-1px'}}>{person.event_name}</h6>
+                                    <h6 style={{marginTop: '23px', marginLeft:'3px', textAlign: 'left', color: '#ffffff', letterSpacing: '-1px'}}>{person.event_name}</h6>
                                 </Container>
                                 </Col>
                                 <Col style={{paddingLeft:'0', paddingRight:'0'}}>
@@ -112,10 +114,11 @@ function PrintPage() {
                                         :person.eng_name}<br/>{person.kor_name}
                                     </b></h1>
                                     </Container>
-                                    <Container style={{marginTop:'-23px', marginRight:'-25px', textAlign:'right'}}>
-                                        <Barcode value={person.barcode} height={30} displayValue={false} width={1} />
+                                    <Container style={{marginTop:'-23px', marginRight:'-20px', textAlign:'right'}}>
+                                        <QRCode value={person.barcode} size={40}/>
+                                        {/* Replaced with QRCode<Barcode value={person.barcode} height={30} displayValue={false} width={1} /> */}
                                     </Container>
-                                    <h6 style={{marginTop: '15px', marginLeft:'3px', textAlign: 'left', color: '#ffffff', letterSpacing: '-1px'}}>{person.event_name}</h6>
+                                    <h6 style={{marginTop: '23px', marginLeft:'3px', textAlign: 'left', color: '#ffffff', letterSpacing: '-1px'}}>{person.event_name}</h6>
                                 </Container>
                                 </Col>
                             </Row>
