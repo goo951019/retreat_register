@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import smalltalk from 'smalltalk';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
@@ -11,14 +11,12 @@ async function addParticipants(event){
   for(let i = 2; i < event.target.length; i++){
     if(event.target[i].type !== "checkbox"){
       // needs this to split sleeping-area to korean and english
-      if(event.target[i].id === "sleeping-area" && event.target[i].value !== "Other"){
+      if(event.target[i].id === "sleeping-area"){
         const splitted = event.target[i].value.split(':');
         kor_sleeping_area = splitted[0];
         values.push(splitted[1]);
         continue;  
       }
-      //when it is others, target[i] gets pushed one time 
-      if(event.target[i].value === "Other") i++;
       values.push(event.target[i].value);
     }else{
       values.push(event.target[i].checked === false ? "N" : "Y");
@@ -38,27 +36,23 @@ async function addParticipants(event){
 // Register New Page
 function RegisterNewPage() {
   const navigate = useNavigate();
-
+  const [churchList, setChurchList] = useState(null);
+  const [sleepingAreaList, setSleepingAreaList] = useState(null);
   const [isGuest, setIsGuest] = useState(false);
-  const [churchInput, setChurchInput] = useState(false);
-  const [sleepingInput, setSleepingInput] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    if(churchList == null) window.api.requestVisibleChurch();
+    if(sleepingAreaList == null) window.api.requestVisibleSleeping_Area();
+    window.api.getVisibleChurch(data => {if(isMounted){setChurchList(data); } });
+    window.api.getVisibleSleeping_Area(data => {if(isMounted){setSleepingAreaList(data); } });
+    return () => {isMounted = false;};
+  });
 
   // For Guest, disable Fee input box
   const onGuestChange = (event) =>{
     if (event.target.value === "Y") setIsGuest(true);
     else setIsGuest(false);
-  }
-
-  // For "Other" Church
-  const onChurchChange = (event) =>{
-    if (event.target.value === "Other") setChurchInput(true);
-    else setChurchInput(false);
-  }
-
-  // For "Other" Sleeping Area
-  const onSleepingChange = (event) =>{
-    if (event.target.value === "Other") setSleepingInput(true);
-    else setSleepingInput(false);
   }
 
   const handleSubmit = (event) => {
@@ -106,21 +100,13 @@ function RegisterNewPage() {
                 <Form.Label>Church</Form.Label>
                 <Row>
                   <Col>
-                    <Form.Control required={true} custom="true" as="select" type="select" style={{fontSize: '3vh'}} onChange={onChurchChange}>
+                    <Form.Control required={true} custom="true" as="select" type="select" style={{fontSize: '3vh'}}>
                       <option value="">Select</option>
-                      <option value="ATLANTA">Atlanta</option>
-                      <option value="CHICAGO">Chicago</option>
-                      <option value="KENTUCKY">Kentucky</option>
-                      <option value="MICHIGAN">Michigan</option>
-                      <option value="NEW JERSEY">New Jersey</option>
-                      <option value="NEW YORK">New York</option>
-                      <option value="S. ILLINOIS">S. Illinois</option>
-                      <option value="S. VIRGINIA">S. Virginia</option>
-                      <option value="WASHINGTON">Washington</option>
-                      <option value="Other">Other</option>
+                      { churchList !== null ? churchList.map((c) =>{
+                        return (<option key={c.c_id} value={c.church_name}>{c.church_name}</option>)
+                      }) : "loading" }
                     </Form.Control>
                   </Col>
-                {churchInput ? <Col xs="8"><Form.Control required={true} style={{fontSize: '3vh'}} type="text" placeholder="Enter Church Name" /></Col> : null}
                 </Row>
               </Form.Group>
             </Col>
@@ -158,40 +144,13 @@ function RegisterNewPage() {
                 <Form.Label>Sleeping Area</Form.Label>
                 <Row>
                   <Col>
-                    <Form.Control id="sleeping-area" required={true} custom="true" as="select" type="select" style={{fontSize: '3vh'}} onChange={onSleepingChange}>
+                    <Form.Control id="sleeping-area" required={true} custom="true" as="select" type="select" style={{fontSize: '3vh'}}>
                       <option value="">Select</option>
-                      <option value="호텔:Hotel">Hotel</option>
-                      <option value="텐트:Tent">Tent</option>
-                      <option value="차량:Car">Car</option>
-                      <option value="베데스다:Bethesda">Bethesda</option>
-                      <option value="소망관 1층:Hope Hall 1st">Hope Hall (1st Floor) - Sisters</option>
-                      <option value="소망관 2층:Hope Hall 2nd">Hope Hall (2nd Floor) - Elders</option>
-                      <option value="유아방:Nursery Room">Hope Hall (Infant Room) - Siters w/ Baby</option>
-                      <option value="디모데관:Timothy Hall">Timothy Hall - YA Brothers</option>
-                      <option value="요셉관:Joseph Hall">Joseph Hall - Youth Group</option>
-                      <option value="사무엘관 1층:Samuel Hall 1st">Samuel Hall (1st Floor) - Fathers</option>
-                      <option value="사무엘관 2층:Samuel Hall 2nd">Samuel Hall (2nd Floor) - Pastors</option>
-                      <option value="엘리야관:Elijah Hall">Elijah Hall - Pastors</option>
-                      <option value="엘리사관:Elisha Hall">Elisha Hall - Patrol Volunteers</option>
-                      <option value="사랑관:Charity Hall">Charity Hall - Snack Bar Volunteers</option>
-                      <option value="은혜관:Grace Hall">Grace Hall - Spanish Ministry</option>
-                      <option value="빌라델비아관:Philadelpia Hall">Philadelpia Hall - Michigan Mothers</option>
-                      <option value="아틀란타 캐빈:ATL Cabin">ATL Cabin - ATL Mothers</option>
-                      <option value="시카고 모빌홈:Chicago Mobile Home">Chicago Mobile Home - Chicago Mothers</option>
-                      <option value="뉴저지 캐빈:NJ Cabin">NJ Cabin - NJ Mothers</option>
-                      <option value="워싱턴 캐빈:Washington Cabin">Washington Cabin - Washington Fathers</option>
-                      <option value="워싱턴 모빌홈:Washington Mobile Home">Washington Mobile Home - Washington Mothers</option>
-                      <option value="주방숙소:Kitchen Area">Kitchen - Mothers Head Officers</option>
-                      <option value="캐빈 1:Cabin 1">Cabin 1</option>
-                      <option value="캐빈 2:Cabin 2">Cabin 2</option>
-                      <option value="캐빈 3:Cabin 3">Cabin 3</option>
-                      <option value="캐빈 4:Cabin 4">Cabin 4</option>
-                      <option value="캐빈 5:Cabin 5">Cabin 5</option>
-                      <option value="캐빈 6:Cabin 6">Cabin 6</option>
-                      <option value="Other">Other</option>
+                      { sleepingAreaList !== null ? sleepingAreaList.map((sa) =>{
+                        return (<option key={sa.s_id} value={sa.kor_sleeping_area+":"+sa.eng_sleeping_area}>{sa.eng_sleeping_area}</option>)
+                      }) : "loading" }
                     </Form.Control>
                   </Col>
-                  {sleepingInput ? <Col xs="8"><Form.Control required={true} style={{fontSize: '3vh'}} type="text" placeholder="Enter Sleeping Area" /></Col> : null}
                 </Row>
               </Form.Group>
             </Col>

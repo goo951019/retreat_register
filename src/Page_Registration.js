@@ -69,7 +69,15 @@ const selected = new Map();
 // Registration Page
 function RegistrationPage() {
   const navigate = useNavigate();
+  const [event, setEvent] = useState(null);
   const [participants, setParticipant] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    if(event == null) window.api.requestAllEvent();
+    window.api.getAllEvent(data => {if(isMounted){setEvent(data); } });
+    return () => {isMounted = false;};
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -126,8 +134,8 @@ function RegistrationPage() {
         <h1 style={{fontSize: '8vh'}}>Registration</h1>
         <Container fluid className="w-100 p-0">
           <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={() => {selected.clear(); navigate(-1);}}>Go Back</Button>
-          <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={() => {navigate('/register-new'); selected.clear();}}>Register</Button>
-          <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={() => {navigate('/register-many'); selected.clear();}}>Register (Many)</Button>
+          <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={() => {if(event === null || event.size === 0){smalltalk.alert("Wanring","No Event Selected")}else{navigate('/register-new'); selected.clear();}}}>Register</Button>
+          <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={() => {if(event === null || event.size === 0){smalltalk.alert("Wanring","No Event Selected")}else{navigate('/register-many'); selected.clear();}}}>Register (Many)</Button>
           <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={handleEdit}>Edit</Button>
           <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={handlePrint}>Make PDF</Button>
           <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-danger" size="lg" onClick={deleteParticipants}>Delete Registration</Button>

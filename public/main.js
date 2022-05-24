@@ -56,6 +56,14 @@ ipcMain.on('request-all-church', async (event, args) => {
   })
 })
 
+// REQUEST AND GET VISIBLE CHURCH
+ipcMain.on('request-visible-church', async (event, args) => {
+  db.all(`SELECT * FROM church WHERE isHidden="Y" ORDER BY c_id ASC`, (err, data) => {
+    if(err) console.log(err.message);
+    event.sender.send('get-visible-church', data);
+  })
+})
+
 // Add Church
 ipcMain.handle('add-church', (event, args) =>{
   db.run(`INSERT INTO church (church_name, isHidden) VALUES("${args.church_name}","Y")`, (err, data) =>{if(err) return err.message;})
@@ -85,6 +93,14 @@ ipcMain.on('request-all-sleeping_area', async (event, args) => {
   db.all(`SELECT * FROM sleeping_area Order By s_id ASC`, (err, data) => {
     if(err) console.log(err.message);
     event.sender.send('get-all-sleeping_area', data);
+  })
+})
+
+// REQUEST AND GET VISIBLE Sleeping Area
+ipcMain.on('request-visible-sleeping_area', async (event, args) => {
+  db.all(`SELECT * FROM sleeping_area WHERE isHidden="Y" Order By s_id ASC`, (err, data) => {
+    if(err) console.log(err.message);
+    event.sender.send('get-visible-sleeping_area', data);
   })
 })
 
