@@ -15,9 +15,12 @@ contextBridge.exposeInMainWorld('api', {
     // Request and Get ALL Church
     requestAllChurch: (args) => ipcRenderer.send('request-all-church', args),
     getAllChurch: (callback) => ipcRenderer.on('get-all-church', (event, data) => {callback(data)}),
-    // add / delete Event
+    // add / delete Church
     addChurch: (args) => ipcRenderer.invoke('add-church', args),
     deleteChurch: (args) => ipcRenderer.invoke('delete-church', args),
+    // hide / show Church
+    hideChurch: (args) => ipcRenderer.invoke('hide-church', args),
+    showChurch: (args) => ipcRenderer.invoke('show-church', args),
 
     // Request and Get ALL Sleeping Area
     requestAllSleeping_Area: (args) => ipcRenderer.send('request-all-sleeping_area', args),
@@ -25,6 +28,9 @@ contextBridge.exposeInMainWorld('api', {
     // add / delete Sleeping Area
     addSleeping_Area: (args) => ipcRenderer.invoke('add-sleeping_area', args),
     deleteSleeping_Area: (args) => ipcRenderer.invoke('delete-sleeping_area', args),
+    // hide / show Sleeping Area
+    hideSleeping_Area: (args) => ipcRenderer.invoke('hide-sleeping_area', args),
+    showSleeping_Area: (args) => ipcRenderer.invoke('show-sleeping_area', args),
 
     // Request and GET Current Participants
     requestCurrentParticipants: (args) => ipcRenderer.send('request-current-participants', args),

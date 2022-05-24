@@ -27,6 +27,11 @@ function createEvent(){
 let selectedEvent_id = null;
 let selectedEvent_name = null;
 let selectedisCurrent = null;
+function clearSelected(){
+  selectedEvent_id = null;
+  selectedEvent_name = null;
+  selectedisCurrent = null;
+}
 async function setCurrentEvent(){
   if(selectedisCurrent === 'Y'){
     smalltalk.alert('Info','Event is already current!');
@@ -55,9 +60,7 @@ function deleteEvent(){
           await window.api.deleteEvent({event_id: selectedEvent_id}).then(() => { 
             requestAllEvent(); 
             smalltalk.alert('Success', '"'+ selectedEvent_name +'" is Deleted!');
-            selectedEvent_id = null;
-            selectedEvent_name = null;
-            selectedisCurrent = null;
+            clearSelected();
           })
         }else{
           smalltalk.alert('Info','Wrong Password!');
@@ -114,7 +117,7 @@ function EventPage() {
         <h1 style={{fontSize: '8vh'}}>Event Management</h1>
         <h4 style={{fontSize: '3vh'}}>Current Event is : {event != null ? event.filter(a=>a.isCurrent==='Y')[0].event_name : ''}</h4>
         <Container>
-          <Button style={{fontSize: '3vh'}} className="m-3" variant="outline-primary" size="lg" onClick={() => navigate(-1)}>Go Back</Button>
+          <Button style={{fontSize: '3vh'}} className="m-3" variant="outline-primary" size="lg" onClick={() => { clearSelected(); navigate(-1);}}>Go Back</Button>
           <Button style={{fontSize: '3vh'}} className="m-3" variant="outline-primary" size="lg" onClick={createEvent}>Create Event</Button>
           <Button style={{fontSize: '3vh'}} className="m-3" variant="outline-primary" size="lg"onClick={setCurrentEvent}>Select Event</Button>
           <Button style={{fontSize: '3vh'}} className="m-3" variant="outline-danger" size="lg" onClick={deleteEvent}>Delete Event</Button>

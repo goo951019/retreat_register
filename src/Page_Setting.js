@@ -20,7 +20,7 @@ function addChurch(){
             if(value === ''){
               smalltalk.alert('Error', 'Please Enter Something!');
             }else{
-              await window.api.addChurch({church_name: value}).then(() => { 
+              await window.api.addChurch({church_name: value.toUpperCase()}).then(() => { 
                 requestAllChurch(); 
                 smalltalk.alert('Success', '"'+ value +'" is Created!');
               })
@@ -28,8 +28,24 @@ function addChurch(){
         }).catch(()=>{});
 }
 
-function hideChurch(){
+async function hideChurch(){
+  if(selectedChurch.size !== 0){
+    await window.api.hideChurch({c_id : [...selectedChurch.keys()]}).then(() => { 
+      requestAllChurch(); 
+      selectedChurch.clear();
+      window.location.reload(false);
+    })
+  }else{smalltalk.alert('Error','Nothing is selected!');}
+}
 
+async function showChurch(){
+  if(selectedChurch.size !== 0){
+    await window.api.showChurch({c_id : [...selectedChurch.keys()]}).then(() => { 
+      requestAllChurch(); 
+      selectedChurch.clear();
+      window.location.reload(false);
+    })
+  }else{smalltalk.alert('Error','Nothing is selected!');}
 }
 
 function deleteChurch(){
@@ -42,6 +58,7 @@ function deleteChurch(){
                 requestAllChurch();
                 smalltalk.alert('Success', selectedChurch.size +' church(es) delete complete!');
                 selectedChurch.clear()
+                window.location.reload(false);
               })
             }else{ smalltalk.alert('Info','Wrong Password!');}
         });
@@ -71,74 +88,43 @@ function addSleeping_Area(){
             }).catch(()=>{});
         }
     }).catch(()=>{});
-    
-}
-
-function hideSleeping_Area(){
 
 }
 
+async function hideSleeping_Area(){
+  if(selectedSleeping_Area.size !== 0){
+    await window.api.hideSleeping_Area({s_id : [...selectedSleeping_Area.keys()]}).then(() => { 
+      requestAllSleeping_Area(); 
+      selectedSleeping_Area.clear();
+      window.location.reload(false);
+    })
+  }else{smalltalk.alert('Error','Nothing is selected!');}
+}
+async function showSleeping_Area(){
+  if(selectedSleeping_Area.size !== 0){
+    await window.api.showSleeping_Area({s_id : [...selectedSleeping_Area.keys()]}).then(() => { 
+      requestAllSleeping_Area(); 
+      selectedSleeping_Area.clear();
+      window.location.reload(false);
+    })
+  }else{smalltalk.alert('Error','Nothing is selected!');}
+}
 function deleteSleeping_Area(){
-
+  if(selectedSleeping_Area.size !== 0){
+    smalltalk.prompt('Question', 'ARE YOU SURE ABOUT REMOVING SELECTED '+ selectedSleeping_Area.size +' SLEEPING AREA(S)?\nEnter Secret Password :')
+    .then(async (value) => {
+        // if you are seeing the sources code, this is the password.
+        if(value === "1234"){
+          await window.api.deleteSleeping_Area({s_id : [...selectedSleeping_Area.keys()]}).then(() => { 
+            requestAllSleeping_Area();
+            smalltalk.alert('Success', selectedSleeping_Area.size +' sleeping_area(s) delete complete!');
+            selectedSleeping_Area.clear()
+            window.location.reload(false);
+          })
+        }else{ smalltalk.alert('Info','Wrong Password!');}
+    });
+  }else{smalltalk.alert('Error','Nothing is selected!');}
 }
-// function createEvent(){
-//   smalltalk
-//     .prompt('Enter name of the Event', '', '')
-//     .then(async (value) => {
-//         if(value === ''){
-//           smalltalk.alert('Error', 'Please Enter Name!');
-//         }else{
-//           await window.api.createEvent({event_name: value}).then(() => { 
-//             requestAllEvent(); 
-//             smalltalk.alert('Success', '"'+ value +'" is Created!');
-//           })
-//         }
-//     }).catch(()=>{});
-// }
-
-// let selectedEvent_id = null;
-// let selectedEvent_name = null;
-// let selectedisCurrent = null;
-// async function setCurrentEvent(){
-//   if(selectedisCurrent === 'Y'){
-//     smalltalk.alert('Info','Event is already current!');
-//     return;
-//   }
-//   if(selectedEvent_id != null){
-//     await window.api.setCurrentEvent({event_id: selectedEvent_id}).then(() => {
-//        requestAllEvent(); 
-//        selectedisCurrent = "Y";
-//     })
-//   }else{
-//     smalltalk.alert('Info','Event is not selected!');
-//   }
-// }
-
-// function deleteEvent(){
-//   if(selectedisCurrent === "Y"){
-//     smalltalk.alert('Info','Cannot remove current event!');
-//     return;
-//   }
-//   if(selectedEvent_id != null){
-//     smalltalk.prompt('Question', 'ARE YOU SURE ABOUT REMOVING: '+ selectedEvent_name +'?\nEnter Secret Password :')
-//     .then(async (value) => {
-//         // if you are seeing the sources code, this is the password.
-//         if(value === "1234"){
-//           await window.api.deleteEvent({event_id: selectedEvent_id}).then(() => { 
-//             requestAllEvent(); 
-//             smalltalk.alert('Success', '"'+ selectedEvent_name +'" is Deleted!');
-//             selectedEvent_id = null;
-//             selectedEvent_name = null;
-//             selectedisCurrent = null;
-//           })
-//         }else{
-//           smalltalk.alert('Info','Wrong Password!');
-//         }
-//     });
-//   }else{
-//     smalltalk.alert('Info','Event is not selected!');
-//   }
-// }
 
 //Table Management
 const churchTable = [{
@@ -170,6 +156,10 @@ const sleeping_areaTable = [{
 // stores selected rows
 const selectedChurch = new Map();
 const selectedSleeping_Area = new Map();
+function clearSelected(){
+  selectedChurch.clear();
+  selectedSleeping_Area.clear();
+}
 
 // Setting Page
 function SettingPage() {
@@ -182,13 +172,8 @@ function SettingPage() {
     if(church == null) window.api.requestAllChurch();
     if(sleeping_area == null) window.api.requestAllSleeping_Area();
     
-    window.api.getAllChurch(data => {
-      if(isMounted) setChurch(data);
-    });
-
-    window.api.getAllSleeping_Area(data => {
-        if(isMounted) setSleeping_Area(data);
-      });
+    window.api.getAllChurch(data => { if(isMounted) setChurch(data);});
+    window.api.getAllSleeping_Area(data => {if(isMounted) setSleeping_Area(data);});
 
     return () => {isMounted = false;};
   });
@@ -222,7 +207,7 @@ function SettingPage() {
       <div className="App">
         <Row>
             <Col xs lg={2}>
-                <Button style={{fontSize: '3vh'}} className="m-3" variant="outline-primary" size="lg" onClick={() => navigate(-1)}>Go Back</Button>
+                <Button style={{fontSize: '3vh'}} className="m-3" variant="outline-primary" size="lg" onClick={() => {clearSelected(); navigate(-1);}}>Go Back</Button>
             </Col>
             <Col>
             </Col>
@@ -233,7 +218,7 @@ function SettingPage() {
                 <Container>
                     <Button style={{fontSize: '2.5vh'}} className="m-2" variant="outline-primary" size="lg" onClick={addChurch}>Add</Button>
                     <Button style={{fontSize: '2.5vh'}} className="m-2" variant="outline-primary" size="lg"onClick={hideChurch}>Hide</Button>
-                    <Button style={{fontSize: '2.5vh'}} className="m-2" variant="outline-primary" size="lg"onClick={hideChurch}>Show</Button>
+                    <Button style={{fontSize: '2.5vh'}} className="m-2" variant="outline-primary" size="lg"onClick={showChurch}>Show</Button>
                     <Button style={{fontSize: '2.5vh'}} className="m-2" variant="outline-danger" size="lg" onClick={deleteChurch}>Delete</Button>
                 </Container>
                 <div style={{overflowY: 'scroll', height: '65vh'}} >
@@ -245,7 +230,7 @@ function SettingPage() {
                 <Container>
                     <Button style={{fontSize: '2.5vh'}} className="m-2" variant="outline-primary" size="lg" onClick={addSleeping_Area}>Add</Button>
                     <Button style={{fontSize: '2.5vh'}} className="m-2" variant="outline-primary" size="lg"onClick={hideSleeping_Area}>Hide</Button>
-                    <Button style={{fontSize: '2.5vh'}} className="m-2" variant="outline-primary" size="lg"onClick={hideSleeping_Area}>Show</Button>
+                    <Button style={{fontSize: '2.5vh'}} className="m-2" variant="outline-primary" size="lg"onClick={showSleeping_Area}>Show</Button>
                     <Button style={{fontSize: '2.5vh'}} className="m-2" variant="outline-danger" size="lg" onClick={deleteSleeping_Area}>Delete</Button>
                 </Container>
                 <div style={{overflowY: 'scroll', height: '65vh'}} >

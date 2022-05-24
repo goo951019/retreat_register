@@ -62,11 +62,22 @@ ipcMain.handle('add-church', (event, args) =>{
   return "New Church Created!";
 })
 
-// Delete Event
+// Delete Church
 ipcMain.handle('delete-church', (event, args) =>{
-  console.log(args);
   db.run(`DELETE FROM church WHERE c_id IN (${args.c_id})`, (err, data) =>{ if(err) return err.message; })
   return "Church Deleted!";
+})
+
+// Hide Church
+ipcMain.handle('hide-church', (event, args) =>{
+  db.run(`UPDATE church SET isHidden="N" WHERE c_id IN (${args.c_id})`, (err, data) =>{if(err) return err.message;})
+  return "Church Hidden!";
+})
+
+// Show Church
+ipcMain.handle('show-church', (event, args) =>{
+  db.run(`UPDATE church SET isHidden="Y" WHERE c_id IN (${args.c_id})`, (err, data) =>{ if(err) return err.message; })
+  return "Church Shown!";
 })
 
 // REQUEST AND GET ALL Sleeping Area
@@ -87,6 +98,18 @@ ipcMain.handle('add-sleeping_area', (event, args) =>{
 ipcMain.handle('delete-sleeping_area', (event, args) =>{
   db.run(`DELETE FROM sleeping_area WHERE s_id IN (${args.s_id})`, (err, data) =>{ if(err) return err.message; })
   return "Sleeping_Area Deleted!";
+})
+
+// Hide Church
+ipcMain.handle('hide-sleeping_area', (event, args) =>{
+  db.run(`UPDATE sleeping_area SET isHidden="N" WHERE s_id IN (${args.s_id})`, (err, data) =>{if(err) return err.message;})
+  return "Sleeping_Area Hidden!";
+})
+
+// Show Church
+ipcMain.handle('show-sleeping_area', (event, args) =>{
+  db.run(`UPDATE sleeping_area SET isHidden="Y" WHERE s_id IN (${args.s_id})`, (err, data) =>{ if(err) return err.message; })
+  return "Sleeping_Area Shown!";
 })
 
 // REQUEST AND GET CURRENT PARTICIPANTS w/ events
@@ -321,8 +344,8 @@ function createWindow() {
     isHidden TEXT NOT NULL)`);
   db.run(`CREATE TABLE IF NOT EXISTS sleeping_area (
     s_id INTEGER PRIMARY KEY NOT NULL,
-    kor_sleeping_area TEXT NOT NULL UNIQUE, 
-    eng_sleeping_area TEXT NOT NULL UNIQUE,
+    kor_sleeping_area TEXT NOT NULL, 
+    eng_sleeping_area TEXT NOT NULL,
     isHidden TEXT NOT NULL)`);
     // , () => {
     //   db.run(`INSERT OR IGNORE INTO sleeping_area(s_id, kor_sleeping_area, eng_sleeping_area)
