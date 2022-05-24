@@ -1,16 +1,30 @@
 const { ipcRenderer, contextBridge } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
+    
     // Request and Get ALL Events
     requestAllEvent: (args) => ipcRenderer.send('request-all-event', args),
     getAllEvent: (callback) => ipcRenderer.on('get-all-event', (event, data) => {callback(data)}),
-
     // set Current Event
     setCurrentEvent: (args) => ipcRenderer.invoke('set-current-event', args),
-
     // create / delete Event
     createEvent: (args) => ipcRenderer.invoke('create-event', args),
     deleteEvent: (args) => ipcRenderer.invoke('delete-event', args),
+
+
+    // Request and Get ALL Church
+    requestAllChurch: (args) => ipcRenderer.send('request-all-church', args),
+    getAllChurch: (callback) => ipcRenderer.on('get-all-church', (event, data) => {callback(data)}),
+    // add / delete Event
+    addChurch: (args) => ipcRenderer.invoke('add-church', args),
+    deleteChurch: (args) => ipcRenderer.invoke('delete-church', args),
+
+    // Request and Get ALL Sleeping Area
+    requestAllSleeping_Area: (args) => ipcRenderer.send('request-all-sleeping_area', args),
+    getAllSleeping_Area: (callback) => ipcRenderer.on('get-all-sleeping_area', (event, data) => {callback(data)}),
+    // add / delete Sleeping Area
+    addSleeping_Area: (args) => ipcRenderer.invoke('add-sleeping_area', args),
+    deleteSleeping_Area: (args) => ipcRenderer.invoke('delete-sleeping_area', args),
 
     // Request and GET Current Participants
     requestCurrentParticipants: (args) => ipcRenderer.send('request-current-participants', args),

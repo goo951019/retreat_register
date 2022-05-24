@@ -48,6 +48,47 @@ ipcMain.handle('delete-event', (event, args) =>{
   return "Event Deleted!";
 })
 
+// REQUEST AND GET ALL CHURCH
+ipcMain.on('request-all-church', async (event, args) => {
+  db.all(`SELECT * FROM church ORDER BY c_id ASC`, (err, data) => {
+    if(err) console.log(err.message);
+    event.sender.send('get-all-church', data);
+  })
+})
+
+// Add Church
+ipcMain.handle('add-church', (event, args) =>{
+  db.run(`INSERT INTO church (church_name, isHidden) VALUES("${args.church_name}","Y")`, (err, data) =>{if(err) return err.message;})
+  return "New Church Created!";
+})
+
+// Delete Event
+ipcMain.handle('delete-church', (event, args) =>{
+  console.log(args);
+  db.run(`DELETE FROM church WHERE c_id IN (${args.c_id})`, (err, data) =>{ if(err) return err.message; })
+  return "Church Deleted!";
+})
+
+// REQUEST AND GET ALL Sleeping Area
+ipcMain.on('request-all-sleeping_area', async (event, args) => {
+  db.all(`SELECT * FROM sleeping_area Order By s_id ASC`, (err, data) => {
+    if(err) console.log(err.message);
+    event.sender.send('get-all-sleeping_area', data);
+  })
+})
+
+// Add Sleeping Area
+ipcMain.handle('add-sleeping_area', (event, args) =>{
+  db.run(`INSERT INTO sleeping_area (kor_sleeping_area, eng_sleeping_area, isHidden) VALUES("${args.kor_sleeping_area}","${args.eng_sleeping_area}","Y")`, (err, data) =>{if(err) return err.message;})
+  return "New Sleeping_Area Created!";
+})
+
+// Delete Sleeping Area
+ipcMain.handle('delete-sleeping_area', (event, args) =>{
+  db.run(`DELETE FROM sleeping_area WHERE s_id IN (${args.s_id})`, (err, data) =>{ if(err) return err.message; })
+  return "Sleeping_Area Deleted!";
+})
+
 // REQUEST AND GET CURRENT PARTICIPANTS w/ events
 ipcMain.on('request-current-participants', async (event, args) => {
   db.all(`SELECT *, (SELECT b.event_name FROM events b WHERE b.event_id=a.event_id) AS event_name
@@ -274,21 +315,27 @@ function createWindow() {
             event_id INTEGER PRIMARY KEY NOT NULL,
             event_name TEXT NOT NULL, 
             isCurrent TEXT NOT NULL)`);
+  db.run(`CREATE TABLE IF NOT EXISTS church (
+    c_id INTEGER PRIMARY KEY NOT NULL,
+    church_name TEXT NOT NULL, 
+    isHidden TEXT NOT NULL)`);
   db.run(`CREATE TABLE IF NOT EXISTS sleeping_area (
     s_id INTEGER PRIMARY KEY NOT NULL,
     kor_sleeping_area TEXT NOT NULL UNIQUE, 
-    eng_sleeping_area TEXT NOT NULL UNIQUE)`, () => {
-      db.run(`INSERT OR IGNORE INTO sleeping_area(s_id, kor_sleeping_area, eng_sleeping_area)
-         VALUES (1, '호텔', 'Hotel'),  (2, '텐트', 'Tent'), (3, '차량', 'Car'), (4, '베데스다', 'Bethesda'),
-        (5, '소망관 1층', 'Hope Hall 1st'), (6, '소망관 2층', 'Hope Hall 2nd'), (7, '유아방', 'Nursery Room'),
-        (8, '디모데관', 'Timothy Hall'), (9, '요셉관', 'Joseph Hall'), (10, '사무엘관 1층', 'Samuel Hall 1st'),
-        (11, '사무엘관 2층', 'Samuel Hall 2nd'), (12, '엘리야관', 'Elijah Hall'), (13, '엘리사관', 'Elisha Hall'),
-        (14, '사랑관', 'Charity Hall'), (15, '은혜관', 'Grace Hall'), (16, '빌라델비아관', 'Philadelpia Hall'),
-        (17, '아틀란타 캐빈', 'ATL Cabin'), (18, '시카고 모빌홈', 'Chicago Mobile Home'), (19, '뉴저지 캐빈', 'NJ Cabin'),
-        (20, '워싱턴 캐빈', 'Washington Cabin'), (21, '워싱턴 모빌홈', 'Washington Mobile Home'), (22, '주방숙소', 'Kitchen Area'),
-        (23, '캐빈 1', 'Cabin 1'), (24, '캐빈 2', 'Cabin 2'), (25, '캐빈 3', 'Cabin 3'),
-        (26, '캐빈 4', 'Cabin 4'), (27, '캐빈 5', 'Cabin 5'), (28, '캐빈 6', 'Cabin 6'), (29, '사택', '사택')`);
-    });
+    eng_sleeping_area TEXT NOT NULL UNIQUE,
+    isHidden TEXT NOT NULL)`);
+    // , () => {
+    //   db.run(`INSERT OR IGNORE INTO sleeping_area(s_id, kor_sleeping_area, eng_sleeping_area)
+    //      VALUES (1, '호텔', 'Hotel'),  (2, '텐트', 'Tent'), (3, '차량', 'Car'), (4, '베데스다', 'Bethesda'),
+    //     (5, '소망관 1층', 'Hope Hall 1st'), (6, '소망관 2층', 'Hope Hall 2nd'), (7, '유아방', 'Nursery Room'),
+    //     (8, '디모데관', 'Timothy Hall'), (9, '요셉관', 'Joseph Hall'), (10, '사무엘관 1층', 'Samuel Hall 1st'),
+    //     (11, '사무엘관 2층', 'Samuel Hall 2nd'), (12, '엘리야관', 'Elijah Hall'), (13, '엘리사관', 'Elisha Hall'),
+    //     (14, '사랑관', 'Charity Hall'), (15, '은혜관', 'Grace Hall'), (16, '빌라델비아관', 'Philadelpia Hall'),
+    //     (17, '아틀란타 캐빈', 'ATL Cabin'), (18, '시카고 모빌홈', 'Chicago Mobile Home'), (19, '뉴저지 캐빈', 'NJ Cabin'),
+    //     (20, '워싱턴 캐빈', 'Washington Cabin'), (21, '워싱턴 모빌홈', 'Washington Mobile Home'), (22, '주방숙소', 'Kitchen Area'),
+    //     (23, '캐빈 1', 'Cabin 1'), (24, '캐빈 2', 'Cabin 2'), (25, '캐빈 3', 'Cabin 3'),
+    //     (26, '캐빈 4', 'Cabin 4'), (27, '캐빈 5', 'Cabin 5'), (28, '캐빈 6', 'Cabin 6'), (29, '사택', '사택')`);
+    // });
   db.run(`CREATE TABLE IF NOT EXISTS participants (
             p_id INTEGER PRIMARY KEY NOT NULL, 
             event_id INTEGER NOT NULL,

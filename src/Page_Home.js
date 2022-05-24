@@ -2,6 +2,8 @@ import React from 'react'
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
+import settings from './images/settings.png';
+
 const buttonResponsiveStyle = {
   fontSize:'6vh',
   width: '100%',
@@ -17,7 +19,14 @@ function HomePage() {
   return (
     <Container fluid className="d-grid gap-2">
       <div className="App">
-        <h2 style={{fontSize: '8vh'}}>JBCH KY Retreat Registeration</h2>
+        <Row>
+          <Col>
+            <h2 style={{fontSize: '8vh'}}>JBCH KY Retreat Registeration</h2>
+          </Col>
+          <Col xs lg={1}>
+          <Button variant="outline-primary" size="sm" onClick={() => navigate('/setting')}><img src={settings} style={{width:'30px'}} alt="setting"/></Button>
+          </Col>
+        </Row>
       </div>
       <Container fluid className="d-grid gap-4">
         <Row style={rowStyle}>

@@ -4,6 +4,7 @@ import {HashRouter as Router, Routes, Route} from "react-router-dom";
 
 import "./App.css";
 import HomePage from './Page_Home';
+import SettingPage from './Page_Setting';
 import EventPage from './Page_Event';
 import RegistrationPage from './Page_Registration';
 import RegisterNewPage from './Page_Registration_New';
@@ -19,6 +20,7 @@ function App() {
         <Router>
           <Routes>
             <Route exact path="/" element={<HomePage/>} />
+            <Route path="/setting" element={<SettingPage/>} />
             <Route path="/event" element={<EventPage/>} />
             <Route path="/registration" element={<RegistrationPage/>} />
             <Route path="/register-new" element={<RegisterNewPage/>} />

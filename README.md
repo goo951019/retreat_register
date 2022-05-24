@@ -1,9 +1,10 @@
-npm run build
-electron:build
-npx electron-packager .
+make node.js, yarn available first
 
-npm install react-bootstrap-table2-filter --save
-npm install react-number-format --save
+and then "npm install" to install all the dependencies.
+
+create db folder before executing.
+
+
 
 https://www.electronjs.org/docs/latest/api/app#appgetpathname
 
