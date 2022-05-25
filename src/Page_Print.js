@@ -8,7 +8,7 @@ import QRCode from "react-qr-code";
 
 import bg from './images/bg.png';
 import bgBlue from './images/bg-blue.png';
-import bgOrange from './images/bg-orange.png';
+import bgRed from './images/bg-red.png';
 import lodging from './images/lodge.png';
 
 const backgroundBlue = {
@@ -21,8 +21,8 @@ const backgroundBlue = {
     padding: '5px'
 }
 
-const backgroundOrange = {
-    backgroundImage: `url(${bgOrange})`,
+const backgrounRed = {
+    backgroundImage: `url(${bgRed})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'contain',
     height: '285px',
@@ -94,11 +94,11 @@ function PrintPage() {
                         return (
                             <Row key={index} style={rowStyles}>
                                 <Col xs='auto' style={{paddingLeft:'0', paddingRight:'0'}}>
-                                <Container style={person.group_name==="Pastor"?backgroundOrange:backgroundBlue}>
+                                <Container style={person.group_name==="Pastor"?backgrounRed:backgroundBlue}>
                                     <h5 style={{marginTop: '20px', marginRight:'3px', textAlign: 'right', color: '#ffffff'}}>{person.church} CHURCH</h5>
                                     <Container style={lodgingImage}/>   
-                                    <h6 style={{marginTop: '-42px', marginLeft:'40px', textAlign: 'left'}}><b>{person.kor_sleeping_area===""?"*":person.kor_sleeping_area}</b></h6>
-                                    <h6 style={{marginTop: '-7px', marginLeft:'40px', textAlign: 'left'}}><b>{person.eng_sleeping_area===""?"*":person.eng_sleeping_area}</b></h6>
+                                    <h6 style={{marginTop: '-42px', marginLeft:'40px', textAlign: 'left'}}><b>{person.kor_sleeping_area===""||person.kor_sleeping_area==="호텔"?"*":person.kor_sleeping_area}</b></h6>
+                                    <h6 style={{marginTop: '-7px', marginLeft:'40px', textAlign: 'left'}}><b>{person.eng_sleeping_area===""||person.eng_sleeping_area==="Hotel"?"*":person.eng_sleeping_area}</b></h6>
                                     <Container style={{height: '110px'}}>
                                         <h1 style={{lineHeight:'55px',textAlign:'center', letterSpacing: '1px'}}><b>
                                             {person.eng_name === "" ? person.kor_name
@@ -114,11 +114,11 @@ function PrintPage() {
                                 </Container>
                                 </Col>
                                 <Col style={{paddingLeft:'0', paddingRight:'0'}}>
-                                <Container style={person.group_name==="Pastor"?backgroundOrange:backgroundBlue}>
+                                <Container style={person.group_name==="Pastor"?backgrounRed:backgroundBlue}>
                                     <h5 style={{marginTop: '20px', marginRight:'3px', textAlign: 'right', color: '#ffffff'}}>{person.church} CHURCH</h5>
                                     <Container style={lodgingImage}/>   
-                                    <h6 style={{marginTop: '-42px', marginLeft:'40px', textAlign: 'left'}}><b>{person.kor_sleeping_area===""?"*":person.kor_sleeping_area}</b></h6>
-                                    <h6 style={{marginTop: '-7px', marginLeft:'40px', textAlign: 'left'}}><b>{person.eng_sleeping_area===""?"*":person.eng_sleeping_area}</b></h6>
+                                    <h6 style={{marginTop: '-42px', marginLeft:'40px', textAlign: 'left'}}><b>{person.kor_sleeping_area===""||person.kor_sleeping_area==="호텔"?"*":person.kor_sleeping_area}</b></h6>
+                                    <h6 style={{marginTop: '-7px', marginLeft:'40px', textAlign: 'left'}}><b>{person.eng_sleeping_area===""||person.eng_sleeping_area==="Hotel"?"*":person.eng_sleeping_area}</b></h6>
                                     <Container style={{height: '110px'}}>
                                     <h1 style={{lineHeight:'55px',textAlign:'center', letterSpacing: '1px'}}><b>
                                         {person.eng_name === "" ? person.kor_name
