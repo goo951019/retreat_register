@@ -44,7 +44,7 @@ export const sleepingArea_KorToEng = (kor) => {
 }
 
 export const numberFormat = (value) =>{
-    return new Intl.NumberFormat('en-IN', {
+    return new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
     }).format(value)

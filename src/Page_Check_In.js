@@ -163,7 +163,7 @@ function CheckInPage() {
     onSelectAll: (isSelect, rows) => {
       if(isSelect) {
           let total=0;
-          rows.map((r) => {selected.set(r.p_id, r); total+=r.fee});
+          rows.map((r) => {selected.set(r.p_id, r); total+=r.fee; return'';});
           setTotalFeePaid(total);
       }else{
           selected.clear();

@@ -3,10 +3,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Container, Row,Col, Button } from 'react-bootstrap';
 
 import { useReactToPrint } from 'react-to-print';
-import Barcode from 'react-barcode';
+//import Barcode from 'react-barcode';
 import QRCode from "react-qr-code";
 
-import bg from './images/bg.png';
+//import bg from './images/bg.png';
 import bgBlue from './images/bg-blue.png';
 import bgRed from './images/bg-red.png';
 import lodging from './images/lodge.png';

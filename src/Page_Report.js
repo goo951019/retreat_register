@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import { Container, Button } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
-import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit';
-import { useReactToPrint } from 'react-to-print';
 import {numberFormat} from './Translator';
+import { CSVLink } from "react-csv";
 
 async function requestAccountingReport(){
     await window.api.requestAccountingReport();
@@ -21,8 +20,6 @@ async function requestGroupReport(){
 async function requestLanguageReport(){
     await window.api.requestLanguageReport();
 }
-
-const { ExportCSVButton } = CSVExport;
 
 //Table Management
 const columns = [
@@ -89,15 +86,6 @@ const columns_language = [
     {dataField: 'total',text: 'Total', sort: true, headerStyle: {width: '30px'},align:'center'},
     ];
 
-const MyExportSCV = (props) =>{
-    const handleClick = () => {
-        props.onExport();
-      };
-      return (
-        <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={handleClick}>Language Report</Button>
-      );
-}
-
 // Report Page
 function ReportPage() {
   const navigate = useNavigate();
@@ -105,7 +93,11 @@ function ReportPage() {
   const [lodgingReport, setLodgingReport] = useState(null);
   const [groupReport, setGroupReport] = useState(null);
   const [languageReport, setLanguageReport] = useState(null);
-  const pdfRef = useRef(null);
+
+  const csv_accounting = {data: accountingReport,filename: 'Accounting_Report.csv'};
+  const csv_lodging = {data: lodgingReport,filename: 'Lodging_Report.csv'};
+  const csv_group = {data: groupReport,filename: 'Group_Report.csv'};
+  const csv_language = {data: languageReport,filename: 'Language_Report.csv'};
 
   const resetReport = () => {
       setAccountingReport(null);
@@ -117,16 +109,14 @@ function ReportPage() {
   useEffect(() => {
     let isMounted = true;
     window.api.getAccountingReport(data => {
-        data.map((r)=>{r.total_fee= numberFormat(r.total_fee);});
-        if(isMounted){ resetReport(); setAccountingReport(data)};
+        data.map((r)=>{r.total_fee= numberFormat(r.total_fee); return'';});
+        if(isMounted){ resetReport(); setAccountingReport(data);};
     })
     window.api.getLodgingReport(data => {if(isMounted) { resetReport(); setLodgingReport(data)};})
     window.api.getGroupReport(data => {if(isMounted) { resetReport(); setGroupReport(data)};})
     window.api.getLanguageReport(data => {if(isMounted) { resetReport(); setLanguageReport(data)};})
     return () => {isMounted = false;};
   });
-
-  const handlePrint = useReactToPrint({content: () => pdfRef.current});
 
   const selectRow = {
     mode: 'radio', 
@@ -141,14 +131,18 @@ function ReportPage() {
       <div className="App">
         <h1 style={{fontSize: '8vh'}}>Report</h1>
         <Container fluid className="w-100 p-0">
-          <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={() => navigate(-1)}>Go Back</Button>
-          <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={requestAccountingReport} >Accounting Report</Button>
-          <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={requestLodgingReport}>Lodging Report</Button>
-          <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={requestGroupReport}>Group Report</Button>
-          <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={requestLanguageReport}>Language Report</Button>
+          <Button style={{fontSize: '3vh'}} className="m-1" variant="outline-primary" size="lg" onClick={() => navigate(-1)}>Go Back</Button>
+          <Button style={{fontSize: '3vh'}} className="m-1" variant="outline-primary" size="lg" onClick={requestAccountingReport} >Accounting Report</Button>
+          <Button style={{fontSize: '3vh'}} className="m-1" variant="outline-primary" size="lg" onClick={requestLodgingReport}>Lodging Report</Button>
+          <Button style={{fontSize: '3vh'}} className="m-1" variant="outline-primary" size="lg" onClick={requestGroupReport}>Group Report</Button>
+          <Button style={{fontSize: '3vh'}} className="m-1" variant="outline-primary" size="lg" onClick={requestLanguageReport}>Language Report</Button>
+          {accountingReport != null ? <Button style={{fontSize: '3vh'}} className="m-1" variant="outline-primary" size="lg"><CSVLink {...csv_accounting}>Export to CSV</CSVLink></Button> :
+            lodgingReport != null ? <Button style={{fontSize: '3vh'}} className="m-1" variant="outline-primary" size="lg"><CSVLink {...csv_lodging}>Export to CSV</CSVLink></Button> :
+            groupReport != null ? <Button style={{fontSize: '3vh'}} className="m-1" variant="outline-primary" size="lg"><CSVLink {...csv_group}>Export to CSV</CSVLink></Button> :
+            languageReport != null ? <Button style={{fontSize: '3vh'}} className="m-1" variant="outline-primary" size="lg"><CSVLink {...csv_language}>Export to CSV</CSVLink></Button> : ""}
         </Container>
       </div>
-      <div style={{overflowY: 'scroll', width: '96vw', height: '70vh'}} ref={pdfRef}>
+      <div style={{overflowY: 'scroll', width: '96vw', height: '70vh'}}>
         {accountingReport != null ? <BootstrapTable keyField='church' data={accountingReport} columns={ columns } selectRow={ selectRow }/> 
         : lodgingReport != null ? <BootstrapTable keyField='eng_sleeping_area' data={lodgingReport} columns={ columns_logding } selectRow={ selectRow }/> 
         : groupReport != null ? <BootstrapTable keyField='group_name' data={groupReport} columns={ columns_group } selectRow={ selectRow }/> 
