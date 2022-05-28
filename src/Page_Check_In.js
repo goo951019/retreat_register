@@ -26,7 +26,7 @@ async function markAsPaidParticipants(){
 async function checkInParticipant(barcode, name){
     await window.api.checkInParticipant({barcode : barcode})
         .then(() => { 
-            smalltalk.alert('Success', '"'+name+'" is Checked In!');
+            smalltalk.alert('Success', '"'+name+'" is Checked In!').then(function() {document.getElementById("barcode-input").focus()});
         });
 }
 
