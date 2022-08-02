@@ -5,7 +5,9 @@ contextBridge.exposeInMainWorld('api', {
     // Request and Get ALL Events
     requestAllEvent: (args) => ipcRenderer.send('request-all-event', args),
     getAllEvent: (callback) => ipcRenderer.on('get-all-event', (event, data) => {callback(data)}),
-    // set Current Event
+    // set, Request and Get Current Events
+    requestCurrentEvent: (args) => ipcRenderer.send('request-current-event', args),
+    getCurrentEvent: (callback) => ipcRenderer.on('get-current-event', (event, data) => {callback(data)}),
     setCurrentEvent: (args) => ipcRenderer.invoke('set-current-event', args),
     // create / delete Event
     createEvent: (args) => ipcRenderer.invoke('create-event', args),
@@ -40,6 +42,11 @@ contextBridge.exposeInMainWorld('api', {
 
     // Request and GET Current Participants
     requestCurrentParticipants: (args) => ipcRenderer.send('request-current-participants', args),
+    requestCurrentParticipants2: (args) => ipcRenderer.invoke('request-current-participants2', args).then((rows) => {
+        // ...
+        console.log("preload:"+rows.data);
+        return rows;
+      }),
     getCurrentParticipants: (callback) => ipcRenderer.on('get-current-participants', (event, data) => {callback(data)}),
 
     // add / add many / delete / update Participant

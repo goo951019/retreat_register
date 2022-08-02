@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
@@ -16,6 +16,21 @@ const rowStyle = {
 
 function HomePage() {
   const navigate = useNavigate();
+  const [event, setEvent] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    if(event == null) window.api.requestCurrentEvent();
+    window.api.getCurrentEvent(data => {
+      if(isMounted){
+        setEvent(data); 
+        // setting global variable - current_event_id & current_event_name
+        window.current_event_id = data[0].event_id;
+        window.current_event_name = data[0].event_name;
+      }});
+    return () => {isMounted = false;};
+  });
+
   return (
     <Container fluid className="d-grid gap-2">
       <div className="App">

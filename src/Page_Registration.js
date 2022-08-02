@@ -6,7 +6,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, Comparator } from 'react-bootstrap-table2-filter';
 
 async function requestCurrentParticipants(){
-  await window.api.requestCurrentParticipants();
+  console.log(await window.api.requestCurrentParticipants2({current_event_id: window.current_event_id}));
 }
 
 function deleteParticipants(){
@@ -69,19 +69,11 @@ const selected = new Map();
 // Registration Page
 function RegistrationPage() {
   const navigate = useNavigate();
-  const [event, setEvent] = useState(null);
   const [participants, setParticipant] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
-    if(event == null) window.api.requestAllEvent();
-    window.api.getAllEvent(data => {if(isMounted){setEvent(data); } });
-    return () => {isMounted = false;};
-  });
-
-  useEffect(() => {
-    let isMounted = true;
-    if(participants === null) {window.api.requestCurrentParticipants();}
+    if(participants === null) {requestCurrentParticipants()}
     if(participants !== null) {removeSpan();}
     window.api.getCurrentParticipants(data => {  if(isMounted){setParticipant(data);} })
     return () => {isMounted = false;};
@@ -134,8 +126,8 @@ function RegistrationPage() {
         <h1 style={{fontSize: '8vh'}}>Registration</h1>
         <Container fluid className="w-100 p-0">
           <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={() => {selected.clear(); navigate(-1);}}>Go Back</Button>
-          <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={() => {if(event === null || event.size === 0){smalltalk.alert("Wanring","No Event Selected")}else{navigate('/register-new'); selected.clear();}}}>Register</Button>
-          <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={() => {if(event === null || event.size === 0){smalltalk.alert("Wanring","No Event Selected")}else{navigate('/register-many'); selected.clear();}}}>Register (Many)</Button>
+          <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={() => {if(window.current_event_id === -1){smalltalk.alert("Wanring","No Event Selected")}else{navigate('/register-new'); selected.clear();}}}>Register</Button>
+          <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={() => {if(window.current_event_id === -1){smalltalk.alert("Wanring","No Event Selected")}else{navigate('/register-many'); selected.clear();}}}>Register (Many)</Button>
           <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={handleEdit}>Edit</Button>
           <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-primary" size="lg" onClick={handlePrint}>Make PDF</Button>
           <Button style={{fontSize: '3vh'}} className="m-2" variant="outline-danger" size="lg" onClick={deleteParticipants}>Delete Registration</Button>

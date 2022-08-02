@@ -28,6 +28,14 @@ ipcMain.on('request-all-event', async (event, args) => {
   })
 })
 
+// REQUEST AND GET ALL EVENT
+ipcMain.on('request-current-event', async (event, args) => {
+  db.all(`SELECT * FROM events WHERE isCurrent="Y"`, (err, data) => {
+    if(err) console.log(err.message);
+    if(data.length != 0) event.sender.send('get-current-event', data);
+  })
+})
+
 // SET CURRENT EVENT
 ipcMain.handle('set-current-event', (event, args) =>{
   db.run(`UPDATE events SET isCurrent="N"`, (err, data) => {if(err) return err.message;})
@@ -136,6 +144,18 @@ ipcMain.on('request-current-participants', async (event, args) => {
    ORDER BY church, eng_name, kor_name`, (err, data) => {
     if(err) console.log(err.message);
     else event.sender.send('get-current-participants', data);
+  })
+})
+
+// REQUEST AND GET CURRENT PARTICIPANTS w/ events
+ipcMain.handle('request-current-participants2', async (event, args) => {
+  db.all(`SELECT * FROM participants a WHERE a.event_id = ${args.current_event_id} 
+   ORDER BY church, eng_name`, (err, rows) => {
+    if(err) console.log(err.message);
+    else{
+      return rows;
+    }
+    //else event.sender.send('get-current-participants', data);
   })
 })
 

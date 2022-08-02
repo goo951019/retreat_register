@@ -29,7 +29,7 @@ async function updateParticipants(event, p_id){
     speak_korean : values[8], speak_english : values[9], speak_spanish: values[10], speak_chinese: values[11],
     is_checked_in : values[12], is_fee_paid: values[13], remark: values[14], p_id: p_id
   }).then(() => { 
-    smalltalk.alert('Success', '"'+ values[0] === "" ? values[1] : values[0] +'" is Updated!');
+    smalltalk.alert('Success', '"'+ values[0] +' : '+ values[1] +'" is Updated!');
   })
 }
 

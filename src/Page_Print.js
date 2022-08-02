@@ -110,7 +110,7 @@ function PrintPage() {
                                         <QRCode value={person.barcode} size={50}/>
                                         {/* Replaced with QRCode<Barcode value={person.barcode} height={30} displayValue={false} width={1} /> */}
                                     </Container>
-                                    <h6 style={{marginTop: '23px', marginLeft:'3px', textAlign: 'left', color: '#ffffff', letterSpacing: '-1px'}}>{person.event_name}</h6>
+                                    <h6 style={{marginTop: '23px', marginLeft:'3px', textAlign: 'left', color: '#ffffff', letterSpacing: '-1px'}}>{window.current_event_name}</h6>
                                 </Container>
                                 </Col>
                                 <Col style={{paddingLeft:'0', paddingRight:'0'}}>
@@ -130,7 +130,7 @@ function PrintPage() {
                                         <QRCode value={person.barcode} size={50}/>
                                         {/* Replaced with QRCode<Barcode value={person.barcode} height={30} displayValue={false} width={1} /> */}
                                     </Container>
-                                    <h6 style={{marginTop: '23px', marginLeft:'3px', textAlign: 'left', color: '#ffffff', letterSpacing: '-1px'}}>{person.event_name}</h6>
+                                    <h6 style={{marginTop: '23px', marginLeft:'3px', textAlign: 'left', color: '#ffffff', letterSpacing: '-1px'}}>{window.current_event_name}</h6>
                                 </Container>
                                 </Col>
                             </Row>
